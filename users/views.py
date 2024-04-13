@@ -1,15 +1,70 @@
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import LoginView as BaseLoginView
-from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
+from django.views import View
 from django.views.generic import CreateView, UpdateView
 
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, PhoneAuthenticationForm
 from users.models import User
 from users.services import generate_verification_token
+from twilio.rest import Client
+import random
+from django.contrib.auth import login, logout
+
+
+class VerificationCodeSender:
+    def __init__(self):
+        # self.account_sid = 'AC9e3735bb784c33d9c3564502f6811e25'
+        # self.auth_token = 'fcf86b849ef444b6eb0c680482bace74'
+        self.account_sid = 'AC1ca443182b1798ab83608084c1d93238'
+        self.auth_token = 'c7bb527bdef14ceef83c2c969c850e17'
+        self.client = Client(self.account_sid, self.auth_token)
+
+    def send_verification_code(self, phone_number):
+        verification_code = ''.join([str(random.randint(0, 9)) for _ in range(4)])
+        message = self.client.messages.create(
+            body=f"Ваш код подтверждения: {verification_code}",
+            from_='+12513206600',
+            to=phone_number
+        )
+        return verification_code
+
+
+class AuthenticatePhoneView(View):
+    def get(self, request):
+        form = PhoneAuthenticationForm()
+        return render(request, 'users/authenticate_phone.html', {'form': form})
+
+    def post(self, request):
+        form = PhoneAuthenticationForm(request.POST)
+        if form.is_valid():
+            phone_number = form.cleaned_data['phone_number']
+            verifier = VerificationCodeSender()
+            verification_code = verifier.send_verification_code(phone_number)
+            request.session['verification_code'] = verification_code
+            request.session['phone_number'] = phone_number
+            return redirect('/users/verifyphone')
+        return render(request, 'users/authenticate_phone.html', {'form': form})
+
+
+class VerifyPhoneView(View):
+    def get(self, request):
+        return render(request, 'users/verify_phone.html')
+
+    def post(self, request):
+        verification_code = request.POST.get('verification_code')
+        stored_code = request.session.get('verification_code')
+        phone_number = request.session.get('phone_number')
+        if verification_code == stored_code:
+            if User.objects.filter(phone=phone_number).exists():
+                user = User.objects.get(phone=phone_number)
+                login(request, user)
+            return redirect('/users/profile/')  # Redirect to success page
+        else:
+            return redirect('/users/loginphone/')
 
 
 class UserLoginView(BaseLoginView):
@@ -30,8 +85,10 @@ class UserLoginView(BaseLoginView):
         return super().form_valid(form)
 
 
-class UserLogoutView(BaseLogoutView):
-    pass
+class UserLogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect('/')
 
 
 def user_registration_success(request):
@@ -43,7 +100,7 @@ def user_verification_view(request, pk, token):
     user.is_active = True
     user.verification_token = None
     user.save()
-    return redirect('users:login')
+    return redirect('users:login_phone')
 
 
 class UserRegistrationCreateView(CreateView):
@@ -56,6 +113,7 @@ class UserRegistrationCreateView(CreateView):
         new_user = form.save()
         verification_token = generate_verification_token()
         new_user.verification_token = verification_token
+        new_user.is_active = True
         new_user.save()
 
         verification_url = self.request.build_absolute_uri(

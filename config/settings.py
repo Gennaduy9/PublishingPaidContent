@@ -24,7 +24,9 @@ SECRET_KEY = "django-insecure-ew&aoj*d*#+b)2c3ueo3#wjf3s2$$!f3qt33tsnrvziwao(k^b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1"]
+ALLOWED_HOSTS = ['127.0.0.1']
+
+
 
 # Application definition
 
@@ -107,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "ru-ru"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Moscow"
 
 USE_I18N = True
 
@@ -133,3 +135,21 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "users.User"
+
+LOGOUT_REDIRECT_URL = "/"
+LOGIN_REDIRECT_URL = "/"
+
+LOGIN_URL = "/users/"
+
+
+APPEND_SLASH=False
+# settings email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = "alex2001smit@gmail.com"
+EMAIL_HOST_PASSWORD = "cwnm srsu suou esqz"
+
+STRIPE_SECRET_API_KEY = "sk_test_51OokxrD11bQl9NrolrITC5hE3n79uICGT3bw50gdEPSiULQgRGtO23UrAtVIxw993csoB6KvLztgRKk7jUfYuE2g00oqp8TBOl"

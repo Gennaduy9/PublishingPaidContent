@@ -19,13 +19,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
-from publishings.views import page_not_found
+# from publishings.views import page_not_found
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("publishings/", include("publishings.urls", namespace="publishings")),
+    path("", include("publishings.urls", namespace="publishings")),
     path('users/', include('users.urls', namespace='users')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
-handler404 = page_not_found
+# handler404 = page_not_found

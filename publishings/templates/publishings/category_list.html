@@ -2,46 +2,131 @@
 {% block content %}
     <div class="row mb-2">
         {% for object in object_list %}
-            <div class="col-md-6">
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-primary-emphasis">{{ title_blog }}</strong>
-                        {% if object.is_paid %}
-                            <h3 class="mb-0">{{ object|title }}</h3>
-                        {% else %}
-                            <h3 class="text-muted">{{ object|title }}</h3>
-                        {% endif %}
-
-
-                        <div class="mb-1 text-body-secondary">Дата создание подписки: {{ object.created_at }}Nov 12</div>
-
-                            <div class="d-flex justify-content-between align-items-center mt-3">
-
-                                <p class="card-text">Статус: {{ mail.get_status_display }}</p>
+            {% if user.is_authenticated %}
+                    <div class="col-md-6">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 d-flex flex-column position-static">
+                                <strong class="d-inline-block mb-2 text-primary-emphasis">{{ title_blog }}</strong>
+                                {% if object.is_status %}
+                                    <h3 class="mb-0">{{ object|title }}</h3>
+                                {% else %}
+                                    <h3 class="text-muted">{{ object|title }}</h3>
+                                {% endif %}
+                                <div class="mb-1 text-body-secondary">Дата создание подписки: {{ object.created }}</div>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <p class="card-text">Статус:
+                                        {% if object.is_status %}
+                                            Платная подписка
+                                        {% else %}
+                                            Бесплатная подписка
+                                        {% endif %}
+                                    </p>
+                                {% if request.path|slice:"1:" == 'categorys/' %}
                                     <div>
-                                        <a href="{% url "publishings:connection_list" %}" class="btn btn-sm {% if color == 'bg-dark' %}btn-secondary{% else %}btn-dark{% endif %} text-white">Редактировать</a>
-                                        <a href="{% url "publishings:clients_delete" object.pk %}" class="btn btn-sm ms-1 {% if color == 'bg-danger' %}btn-secondary{% else %}btn-danger{% endif %} text-white">Удалить</a>
+                                        {% if object.user.id == request.user.id %}
+                                            <a href="{% url "publishings:clients_update" object.pk %}"
+                                               class="btn btn-sm {% if color == 'bg-dark' %}btn-secondary{% else %}btn-dark{% endif %} text-white position-relative"
+                                               style="z-index: 100">Редактировать</a>
+                                            <a href="{% url "publishings:clients_delete" object.pk %}"
+                                               class="btn btn-sm ms-1 {% if color == 'bg-danger' %}btn-secondary{% else %}btn-danger{% endif %} text-white position-relative"
+                                               style="z-index: 100">Удалить</a>
+                                        {% endif %}
                                     </div>
-                            </div>
+                                    {% endif %}
+                                </div>
 
-                        <p class="card-text mb-auto">{{ content }}</p>
-                        <a href="#" class="icon-link gap-1 icon-link-hover stretched-link">
-                            Continue reading
-                            <svg class="bi">
-                                <use xlink:href="#chevron-right"/>
-                            </svg>
-                        </a>
+                                <p class="card-text mb-auto">{{ content }}</p>
+                                <!-- <a href="#" class="btn btn-sm btn-info text-white position-relative"
+                                    style="z-index: 100">
+
+
+                                 </a>-->
+
+                                {% if request.path|slice:"1:" != 'categorys/' %}
+                                    {% if object.pk in id_sub %}
+                                        <p style="color: green">Подписан</p>
+                                    {% else %}
+                                        {% if  object.is_status %}
+                                        <form action="{% url 'publishings:payment_stripe' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id_profile" value="{{ object.pk }}">
+                                            <button class="btn btn-sm btn-info text-white position-relative"
+                                                    style="z-index: 100">
+                                                Подписка
+                                            </button>
+                                        </form>
+                                            {% endif %}
+                                    {% endif %}
+                                   {% if not object.is_status %}
+
+                                       {% endif %}
+                                    {% if object.pk in id_sub %}
+
+                                        <a href="{% url "publishings:detail" object.pk %}"
+                                           class="icon-link gap-1 icon-link-hover stretched-link position-relative"
+                                           style="z-index: 100">
+                                            Читать пост
+                                            <svg class="bi">
+                                                <use xlink:href="#chevron-right"/>
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                            <div class="col-auto d-none d-lg-block"></div>
+                        </div>
                     </div>
-                    <div class="col-auto d-none d-lg-block">
-                        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg"
-                             role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice"
-                             focusable="false"><title>Placeholder</title>
-                            <rect width="100%" height="100%" fill="#55595c"/>
-                            <text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text>
-                        </svg>
+            {% else %}
+                {% if not object.is_status %}
+                    <div class="col-md-6">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                            <div class="col p-4 d-flex flex-column position-static">
+                                <strong class="d-inline-block mb-2 text-primary-emphasis">{{ title_blog }}</strong>
+                                {% if object.is_paid %}
+                                    <h3 class="mb-0">{{ object|title }}</h3>
+                                {% else %}
+                                    <h3 class="text-muted">{{ object|title }}</h3>
+                                {% endif %}
+                                <div class="mb-1 text-body-secondary">Дата создание подписки: {{ object.created }}</div>
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <p class="card-text">Статус:
+                                        {% if object.is_status %}
+                                            Платная подписка
+                                        {% else %}
+                                            Бесплатная подписка
+                                        {% endif %}
+                                    </p>
+                                    <div>
+                                        {% if object.user.id == request.user.id %}
+                                            <a href="{% url "publishings:clients_update" object.pk %}"
+                                               class="btn btn-sm {% if color == 'bg-dark' %}btn-secondary{% else %}btn-dark{% endif %} text-white position-relative"
+                                               style="z-index: 100">Редактировать</a>
+                                            <a href="{% url "publishings:clients_delete" object.pk %}"
+                                               class="btn btn-sm ms-1 {% if color == 'bg-danger' %}btn-secondary{% else %}btn-danger{% endif %} text-white position-relative"
+                                               style="z-index: 100">Удалить</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <p class="card-text mb-auto">{{ content }}</p>
+                                {% if object.pk in id_sub %}
+                                    <a href="{% url "publishings:detail" object.pk %}"
+                                       class="icon-link gap-1 icon-link-hover stretched-link position-relative"
+                                       style="z-index: 100">
+                                        Читать пост
+                                        <svg class="bi">
+                                            <use xlink:href="#chevron-right"/>
+                                        </svg>
+                                    </a>
+                                {% endif %}
+                            </div>
+                            <div class="col-auto d-none d-lg-block"></div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endif %}
+
+            {% endif %}
+
         {% endfor %}
     </div>
 {% endblock %}

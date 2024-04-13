@@ -7,11 +7,12 @@ from publishings.models import Profile
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'email', 'content')
-
+        fields = ('first_name', 'last_name', 'email', 'content', 'is_status')
+        #widgets = {
+        #    'is_status': forms.CheckboxInput()
+        #}
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields['first_name'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Имя"})
         self.fields['last_name'].widget.attrs.update(
@@ -24,6 +25,7 @@ class ClientForm(forms.ModelForm):
         for field_name in self.fields:
             self.fields[field_name].label = ""
             self.fields[field_name].help_text = ""
+        self.fields['is_status'].label = 'Платный пост?'
 
     def clean_email(self):
         email = self.cleaned_data['email']

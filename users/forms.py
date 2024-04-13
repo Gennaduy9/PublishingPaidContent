@@ -7,13 +7,15 @@ from .models import User
 class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
-        fields = ('email', 'password1', 'password2')
+        fields = ('phone', 'email')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.fields['phone'].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Напишите ваш номер телефона"})
         self.fields['email'].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Напишите ваш e-mail"})
+            {"class": "form-control", "placeholder": "Напишите вашу электронную почту"})
         self.fields['password1'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Новый пароль"})
         self.fields['password2'].widget.attrs.update(
@@ -25,11 +27,12 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class UserLoginForm(AuthenticationForm):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields['username'].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Напишите ваш e-mail"})
+            {"class": "form-control", "id": "id_phone", "placeholder": "Напишите ваш номер телефона"})
         self.fields['password'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Напишите ваш пароль"})
 
@@ -41,7 +44,7 @@ class UserLoginForm(AuthenticationForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'phone', 'avatar', 'country')
+        fields = ('first_name', 'last_name', 'phone', 'email')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -52,11 +55,12 @@ class UserProfileForm(forms.ModelForm):
             {"class": "form-control", "placeholder": "Напишите вашу фамилию"})
         self.fields['phone'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Напишите свой телефон"})
-        self.fields['avatar'].widget.attrs.update(
-            {"class": "form-control"})
-        self.fields['country'].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Напишите вашу страну"})
 
         for field_name in self.fields:
             self.fields[field_name].label = ""
             self.fields[field_name].help_text = ""
+
+
+class PhoneAuthenticationForm(forms.Form):
+    phone_number = forms.CharField(max_length=30, label='',
+                                   widget=forms.TextInput(attrs={'class': 'w-100', 'placeholder': 'Телефон'}))

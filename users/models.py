@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from publishings.models import Subscription
+
 NULLABLE = {'blank': True, 'null': True}
 
 
@@ -16,15 +18,33 @@ class User(AbstractUser):
     country = models.CharField(**NULLABLE, max_length=150, verbose_name='страна')
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['phone']
 
     def __str__(self):
-        return self.email
+        return self.phone
 
     class Meta:
-        permissions = [
-            ("Can_view_the_list_of_users_of_the_service", 'Can view the list of service users'),
-            ("May_block_users_of_the_service", 'Can block users of the service'),
-        ]
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+class Payment(models.Model):
+    METHOD_CHOICES = [
+        ('transfer', 'Перевод на счет'),
+        ('cash', 'Наличные'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь', **NULLABLE)
+    pay_date = models.DateField(verbose_name='Дата оплаты')
+    pay_subscribe = models.ForeignKey(Subscription, on_delete=models.CASCADE, verbose_name='Подписка оплачена',
+                                      **NULLABLE)
+    money = models.IntegerField(verbose_name='Оплаченная сумма')
+    pay_method = models.CharField(choices=METHOD_CHOICES, default=METHOD_CHOICES[0],
+                                  verbose_name='Способ оплаты')
+
+    def __str__(self):
+        return f'{self.money}'
+
+    class Meta:
+        verbose_name = 'Оплата'
+        verbose_name_plural = 'Оплата'
