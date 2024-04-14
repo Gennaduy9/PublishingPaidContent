@@ -10,23 +10,26 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ew&aoj*d*#+b)2c3ueo3#wjf3s2$$!f3qt33tsnrvziwao(k^b"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG") == "True"
 
 ALLOWED_HOSTS = ['127.0.0.1']
-
-
 
 # Application definition
 
@@ -78,11 +81,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "postgres_paid_content",  # Название БД
-        "USER": "postgres",  # Пользователь для подключения
-        "PASSWORD": 12345,  # Пароль для этого пользователя
-        "HOST": "localhost",  # Адрес, на котором развернут сервер БД
-        "PORT": 5432,  # Порт, на котором работает сервер БД
+        "NAME": os.getenv("NAME"),  # Название БД
+        "USER": os.getenv("USER"),  # Пользователь для подключения
+        "PASSWORD": os.getenv("PASSWORD"),  # Пароль для этого пользователя
+        "HOST": os.getenv("HOST"),  # Адрес, на котором развернут сервер БД
+        "PORT": os.getenv("PORT"),  # Порт, на котором работает сервер БД
     }
 }
 
@@ -141,15 +144,17 @@ LOGIN_REDIRECT_URL = "/"
 
 LOGIN_URL = "/users/"
 
-
-APPEND_SLASH=False
+APPEND_SLASH = False
 # settings email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = "alex2001smit@gmail.com"
-EMAIL_HOST_PASSWORD = "cwnm srsu suou esqz"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
-STRIPE_SECRET_API_KEY = "sk_test_51OokxrD11bQl9NrolrITC5hE3n79uICGT3bw50gdEPSiULQgRGtO23UrAtVIxw993csoB6KvLztgRKk7jUfYuE2g00oqp8TBOl"
+STRIPE_SECRET_API_KEY = os.getenv("STRIPE_SECRET_API_KEY")
+
+TWILIO_SECRET_SID = os.getenv("TWILIO_SECRET_SID")
+TWILIO_SECRET_TOKEN = os.getenv("TWILIO_SECRET_TOKEN")

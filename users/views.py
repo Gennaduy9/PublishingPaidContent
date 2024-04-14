@@ -7,6 +7,7 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import CreateView, UpdateView
 
+from config.settings import TWILIO_SECRET_SID, TWILIO_SECRET_TOKEN
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, PhoneAuthenticationForm
 from users.models import User
 from users.services import generate_verification_token
@@ -17,10 +18,8 @@ from django.contrib.auth import login, logout
 
 class VerificationCodeSender:
     def __init__(self):
-        # self.account_sid = 'AC9e3735bb784c33d9c3564502f6811e25'
-        # self.auth_token = 'fcf86b849ef444b6eb0c680482bace74'
-        self.account_sid = 'AC1ca443182b1798ab83608084c1d93238'
-        self.auth_token = 'c7bb527bdef14ceef83c2c969c850e17'
+        self.account_sid = TWILIO_SECRET_SID
+        self.auth_token = TWILIO_SECRET_TOKEN
         self.client = Client(self.account_sid, self.auth_token)
 
     def send_verification_code(self, phone_number):
