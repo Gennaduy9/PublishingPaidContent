@@ -32,5 +32,14 @@ class ClientForm(forms.ModelForm):
         if len(email) > 30:
             raise ValidationError("Электронная почта может содержать не более 30 символов")
         if '@' not in email:
-            raise ValidationError("Электронная почта невозможна без '@'.")
+            raise ValidationError("Введите правильный адрес электронной почты.")
         return email
+
+    def clean_content(self):
+        content = self.cleaned_data['content']
+        if len(content) > 1000:  # Assuming maximum length is 1000
+            raise forms.ValidationError("Содержимое статьи не может превышать 1000 символов.")
+        return content
+
+
+

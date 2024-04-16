@@ -60,7 +60,7 @@
                                    {% if not object.is_status %}
 
                                        {% endif %}
-                                    {% if object.pk in id_sub %}
+                                    {% if object.pk in id_sub or not object.is_status  %}
 
                                         <a href="{% url "publishings:detail" object.pk %}"
                                            class="icon-link gap-1 icon-link-hover stretched-link position-relative"
@@ -109,7 +109,7 @@
                                 </div>
 
                                 <p class="card-text mb-auto">{{ content }}</p>
-                                {% if object.pk in id_sub %}
+                                {% if object.pk in id_sub or not object.is_status %}
                                     <a href="{% url "publishings:detail" object.pk %}"
                                        class="icon-link gap-1 icon-link-hover stretched-link position-relative"
                                        style="z-index: 100">

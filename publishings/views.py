@@ -1,6 +1,8 @@
 import json
 
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -56,13 +58,17 @@ class ConnectionView(TemplateView):
         'title': 'Обратная связь',
     }
 
-    def get_context_data(self, **kwargs):
-        if self.request.method == 'POST':
-            name = self.request.POST.get('name')
-            email = self.request.POST.get('email')
-            message = self.request.POST.get('message')
-            print(f'You have new message from {name}({email}): {message}')
-        return super().get_context_data(**kwargs)
+    def post(self, request):
+        name = self.request.POST.get('name')
+        email = self.request.POST.get('email')
+        message = self.request.POST.get('message')
+        send_mail(
+            subject='Обратная связь',
+            message=f'Имя {name} Email {email} Сообщение {message}',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=['myparents2@yandex.ru']
+        )
+        return redirect('/')
 
 
 class ClientListView(ListView):
@@ -87,7 +93,7 @@ class ClientListView(ListView):
         return context
 
 
-class ClientDetailView(LoginRequiredMixin, View):
+class ClientDetailView(View):
     def get(self, request, pk):
         profile = Profile.objects.get(id=pk)
         return render(request, 'publishings/detail.html', context={'profile': profile})

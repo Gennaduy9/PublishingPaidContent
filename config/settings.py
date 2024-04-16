@@ -77,16 +77,21 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+TEST_DATABASE_PREFIX = 'test_'
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("NAME"),  # Название БД
-        "USER": os.getenv("USER"),  # Пользователь для подключения
-        "PASSWORD": os.getenv("PASSWORD"),  # Пароль для этого пользователя
-        "HOST": os.getenv("HOST"),  # Адрес, на котором развернут сервер БД
-        "PORT": os.getenv("PORT"),  # Порт, на котором работает сервер БД
-    }
+        "NAME": os.getenv("POSTGRES_DB"), # Название БД
+        "USER": os.getenv("POSTGRES_USER"), # Пользователь для подключения
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"), # Пароль для этого пользователя
+        "HOST": os.getenv("POSTGRES_HOST"), # Адрес, на котором развернут сервер БД
+        "PORT": os.getenv("POSTGRES_PORT"), # Порт, на котором работает сервер БД
+        'TEST': {
+                    'NAME': os.getenv("POSTGRES_DB")
+            },
+    },
+
 }
 
 # Password validation

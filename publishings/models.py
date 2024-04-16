@@ -24,18 +24,18 @@ class Profile(models.Model):
         ordering = ('last_name',)
 
 
-class ProfilePayment(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Название продукта', **NULLABLE)
-    price_amount = models.CharField(verbose_name='Цена платежа', **NULLABLE)
-    payment_link = models.URLField(max_length=400, verbose_name='Ссылка на оплату', **NULLABLE)
-    payment_id = models.CharField(max_length=255, verbose_name='Идентификатор платежа', **NULLABLE)
-
-    def __str__(self):
-        return self.payment_id
-
-    class Meta:
-        verbose_name = 'Оплата'
-        verbose_name_plural = 'Оплата'
+# class ProfilePayment(models.Model):
+#     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Название продукта', **NULLABLE)
+#     price_amount = models.CharField(verbose_name='Цена платежа', **NULLABLE)
+#     payment_link = models.URLField(max_length=400, verbose_name='Ссылка на оплату', **NULLABLE)
+#     payment_id = models.CharField(max_length=255, verbose_name='Идентификатор платежа', **NULLABLE)
+#
+#     def __str__(self):
+#         return self.payment_id
+#
+#     class Meta:
+#         verbose_name = 'Оплата'
+#         verbose_name_plural = 'Оплата'
 
 
 class Subscription(models.Model):
@@ -49,7 +49,8 @@ class Subscription(models.Model):
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, verbose_name='Профиль')
 
     def __str__(self):
-        return str(self.created_at)
+        #return str(self.created_at)
+        return str(self.status)
 
     class Meta:
         permissions = [

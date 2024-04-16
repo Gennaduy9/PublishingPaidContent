@@ -18,8 +18,8 @@ from django.contrib.auth import login, logout
 
 class VerificationCodeSender:
     def __init__(self):
-        self.account_sid = TWILIO_SECRET_SID
-        self.auth_token = TWILIO_SECRET_TOKEN
+        self.account_sid = f'{TWILIO_SECRET_SID}'
+        self.auth_token = f'{TWILIO_SECRET_TOKEN}'
         self.client = Client(self.account_sid, self.auth_token)
 
     def send_verification_code(self, phone_number):
@@ -45,7 +45,7 @@ class AuthenticatePhoneView(View):
             verification_code = verifier.send_verification_code(phone_number)
             request.session['verification_code'] = verification_code
             request.session['phone_number'] = phone_number
-            return redirect('/users/verifyphone')
+            return redirect('/users/verifyphone/')
         return render(request, 'users/authenticate_phone.html', {'form': form})
 
 
