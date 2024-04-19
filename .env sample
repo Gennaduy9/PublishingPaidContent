@@ -1,0 +1,17 @@
+DEBUG=
+SECRET_KEY=
+
+NAME=
+USER=
+PASSWORD=
+HOST=
+PORT=
+
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+
+STRIPE_SECRET_API_KEY=
+
+TWILIO_SECRET_SID=
+TWILIO_SECRET_TOKEN=
+    command: bash -c "d:/stripe/stripe.exe  login --api-key ${STRIPE_SECRET_API_KEY} && d:/stripe/stripe.exe listen --forward-to http://127.0.0.1:8000/webhook"
