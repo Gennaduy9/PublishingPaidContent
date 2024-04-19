@@ -2,20 +2,19 @@ version: "3.11"
 
 services:
 
-  stripe:
+  stripe_cli:
     image: stripe/stripe-cli:v1.19.4
-    restart: on-failure
-    command: listen --forward-to http://0.0.0.0:8000/webhook
+    container_name: stripe-cli
+    command: "listen --api-key ${STRIPE_SECRET_API_KEY} --device-name ${STRIPE_DEVICE_NAME} --forward-to web:8000/webhook"
     env_file:
       - .env
-    environment:
-      - STRIPE_API_KEY=${STRIPE_SECRET_API_KEY}
-      - STRIPE_DEVICE_NAME=djstripe_docker
     depends_on:
       - web
+    restart: on-failure
 
   db:
     image: postgres
+    container_name: postgres_paid_content
     restart: always
     # set shared memory limit when using docker-compose
     shm_size: 128mb
@@ -36,8 +35,9 @@ services:
 
   web:
     image: django
-    restart: on-failure
+    container_name: web8000
     build: .
+    restart: on-failure
     tty: true
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     env_file:
@@ -52,6 +52,7 @@ services:
 
   tests:
     image: tests
+    container_name: test-T9
     build: .
     command: bash -c "coverage run --source=publishings manage.py test && coverage report"
     depends_on:

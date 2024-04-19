@@ -31,7 +31,7 @@ SECRET_KEY = "django-insecure-ew&aoj*d*#+b)2c3ueo3#wjf3s2$$!f3qt33tsnrvziwao(k^b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "web"]
 WEB = "http://127.0.0.1:8000"
 
 # Application definition
@@ -169,6 +169,7 @@ EMAIL_USE_SSL = False
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+STRIPE_DEVICE_NAME = os.getenv("STRIPE_DEVICE_NAME")
 STRIPE_SECRET_API_KEY = os.getenv("STRIPE_SECRET_API_KEY")
 
 TWILIO_SECRET_SID = os.getenv("TWILIO_SECRET_SID")
