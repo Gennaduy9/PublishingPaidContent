@@ -1,0 +1,18 @@
+{% extends 'publishings/base.html' %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center h-50">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8 col-sm-10">
+                    <div class="card shadow-lg p-4">
+                        <h4 class="text-center mb-4">
+                            Перейдите на страницу авторизации !
+                        </h4>
+                        <p class="text-center mb-4"><a href="{% url 'users:login_phone' %}">Авторизация</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
