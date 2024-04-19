@@ -4,15 +4,15 @@ from django.core.exceptions import ValidationError
 from publishings.models import Profile
 
 
+# Форма для создания и обновления профиля
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('first_name', 'last_name', 'email', 'content', 'is_status')
-        #widgets = {
-        #    'is_status': forms.CheckboxInput()
-        #}
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Обновление атрибутов виджетов для каждого поля
         self.fields['first_name'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Имя"})
         self.fields['last_name'].widget.attrs.update(
@@ -22,13 +22,16 @@ class ClientForm(forms.ModelForm):
         self.fields['content'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Содержимое статьи"})
 
+        # Удаление меток и подсказок для каждого поля
         for field_name in self.fields:
             self.fields[field_name].label = ""
             self.fields[field_name].help_text = ""
+        # Обновление метки для поля is_status
         self.fields['is_status'].label = 'Платный пост?'
 
     def clean_email(self):
         email = self.cleaned_data['email']
+        # Проверка длины и формата электронной почты
         if len(email) > 30:
             raise ValidationError("Электронная почта может содержать не более 30 символов")
         if '@' not in email:
@@ -37,9 +40,7 @@ class ClientForm(forms.ModelForm):
 
     def clean_content(self):
         content = self.cleaned_data['content']
-        if len(content) > 1000:  # Assuming maximum length is 1000
+        # Проверка длины содержимого
+        if len(content) > 1000:  # Предполагается, что максимальная длина составляет 1000 символов
             raise forms.ValidationError("Содержимое статьи не может превышать 1000 символов.")
         return content
-
-
-

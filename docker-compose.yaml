@@ -2,6 +2,17 @@ version: "3.11"
 
 services:
 
+  stripe:
+    image: stripe/stripe-cli:v1.19.4
+    restart: on-failure
+    command: listen --forward-to http://0.0.0.0:8000/webhook
+    env_file:
+      - .env
+    environment:
+      - STRIPE_API_KEY=${STRIPE_SECRET_API_KEY}
+      - STRIPE_DEVICE_NAME=djstripe_docker
+    depends_on:
+      - web
 
   db:
     image: postgres
@@ -23,7 +34,7 @@ services:
       timeout: 5s
       retries: 10
 
-  app:
+  web:
     image: django
     restart: on-failure
     build: .
@@ -32,19 +43,27 @@ services:
     env_file:
       - .env
     ports:
-      - "8001:8000"
+      - "8000:8000"
     volumes:
       - .:/running
     depends_on:
       db:
         condition: service_healthy
 
+  superuser:
+    image: superuser
+    build: .
+    command: python manage.py csu
+    depends_on:
+      - web
+    restart: on-failure
+
   tests:
     image: tests
     build: .
     command: bash -c "coverage run --source=publishings manage.py test && coverage report"
     depends_on:
-      - app
+      - web
     restart: on-failure
 
 volumes:

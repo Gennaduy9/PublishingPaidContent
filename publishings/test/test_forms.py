@@ -6,8 +6,7 @@ from publishings.forms import ClientForm
 class ClientFormTest(TestCase):
 
     def test_clean_email(self):
-
-        # Test valid email
+        # Проверьте действительный адрес электронной почты
         form_data = {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -19,7 +18,7 @@ class ClientFormTest(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_clean_email_too_long(self):
-        # Test email length exceeds limit
+        # Длина тестового электронного письма превышает установленный лимит
         form_data = {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -33,7 +32,7 @@ class ClientFormTest(TestCase):
         self.assertEqual(form.errors['email'], ['Электронная почта может содержать не более 30 символов'])
 
     def test_clean_email_no_at_symbol(self):
-        # Test email without '@' symbol
+        # Тестовое электронное письмо без символа "@"
         form_data = {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -47,7 +46,7 @@ class ClientFormTest(TestCase):
         self.assertEqual(form.errors['email'], ["Введите правильный адрес электронной почты."])
 
     def test_empty_email(self):
-        # Test empty email field
+        # Проверьте пустое поле электронной почты
         form_data = {
             'first_name': 'John',
             'last_name': 'Doe',
@@ -60,7 +59,7 @@ class ClientFormTest(TestCase):
         self.assertEqual(form.errors['email'], ['Обязательное поле.'])
 
     def test_content_length_exceeds_limit(self):
-        # Test content length exceeds limit
+        # Длина тестового содержимого превышает допустимое значение
         form_data = {
             'first_name': 'John',
             'last_name': 'Doe',

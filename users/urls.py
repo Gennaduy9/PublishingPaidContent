@@ -14,5 +14,5 @@ urlpatterns = [
     path('registration/', UserRegistrationCreateView.as_view(), name='registration'),
     path('registration_success/', user_registration_success, name='registration_success'),
     path('verification/<int:pk>/<str:token>/', user_verification_view, name='verification'),
-    path('profile/', UserProfileUpdateView.as_view(), name='profile')
+    path('profile/', UserProfileUpdateView.as_view(), name='profile'),
 ]

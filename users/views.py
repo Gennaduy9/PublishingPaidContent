@@ -17,12 +17,14 @@ from django.contrib.auth import login, logout
 
 
 class VerificationCodeSender:
+    # Класс для отправки кода верификации через SMS с помощью Twilio
     def __init__(self):
         self.account_sid = f'{TWILIO_SECRET_SID}'
         self.auth_token = f'{TWILIO_SECRET_TOKEN}'
         self.client = Client(self.account_sid, self.auth_token)
 
     def send_verification_code(self, phone_number):
+        # Метод для отправки кода верификации на указанный номер телефона
         verification_code = ''.join([str(random.randint(0, 9)) for _ in range(4)])
         message = self.client.messages.create(
             body=f"Ваш код подтверждения: {verification_code}",
@@ -33,6 +35,7 @@ class VerificationCodeSender:
 
 
 class AuthenticatePhoneView(View):
+    # Представление для аутентификации по телефону
     def get(self, request):
         form = PhoneAuthenticationForm()
         return render(request, 'users/authenticate_phone.html', {'form': form})
@@ -50,6 +53,7 @@ class AuthenticatePhoneView(View):
 
 
 class VerifyPhoneView(View):
+    # Представление для верификации телефона через ввод кода из SMS
     def get(self, request):
         return render(request, 'users/verify_phone.html')
 
@@ -67,10 +71,10 @@ class VerifyPhoneView(View):
 
 
 class UserLoginView(BaseLoginView):
+    # Представление для входа пользователя
     model = User
     form_class = UserLoginForm
     template_name = 'users/login_form.html'
-    success_url = reverse_lazy('home:index')
 
     def form_valid(self, form):
         user = form.get_user()
@@ -85,6 +89,7 @@ class UserLoginView(BaseLoginView):
 
 
 class UserLogoutView(View):
+    # Представление для выхода пользователя
     def get(self, request):
         logout(request)
         return redirect('/')
@@ -103,6 +108,7 @@ def user_verification_view(request, pk, token):
 
 
 class UserRegistrationCreateView(CreateView):
+    # Представление для регистрации пользователя
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/registration_form.html'
@@ -131,6 +137,7 @@ class UserRegistrationCreateView(CreateView):
 
 
 class UserProfileUpdateView(UpdateView):
+    # Представление для обновления профиля пользователя
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile_form.html'
