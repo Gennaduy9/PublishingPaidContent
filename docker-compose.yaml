@@ -50,14 +50,6 @@ services:
       db:
         condition: service_healthy
 
-  superuser:
-    image: superuser
-    build: .
-    command: python manage.py csu
-    depends_on:
-      - web
-    restart: on-failure
-
   tests:
     image: tests
     build: .
