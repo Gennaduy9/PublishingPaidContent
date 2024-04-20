@@ -14,7 +14,7 @@ services:
 
   db:
     image: postgres
-    container_name: postgres_paid_content
+    container_name: postgres_db
     restart: always
     # set shared memory limit when using docker-compose
     shm_size: 128mb
@@ -35,7 +35,7 @@ services:
 
   web:
     image: django
-    container_name: web8000
+    container_name: django_web
     build: .
     restart: on-failure
     tty: true
@@ -52,7 +52,7 @@ services:
 
   tests:
     image: tests
-    container_name: test-T9
+    container_name: django_test
     build: .
     command: bash -c "coverage run --source=publishings manage.py test && coverage report"
     depends_on:

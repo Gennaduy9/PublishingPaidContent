@@ -5,6 +5,7 @@ NULLABLE = {"blank": True, "null": True}
 
 
 class Profile(models.Model):
+    title = models.CharField(max_length=100, verbose_name='Заголовок', null=True)
     first_name = models.CharField(max_length=500, verbose_name='Имя')
     last_name = models.CharField(max_length=100, verbose_name='Фамилия')
     content = models.TextField(**NULLABLE, verbose_name='Содержимое статьи')

@@ -8,6 +8,7 @@ class ClientFormTest(TestCase):
     def test_clean_email(self):
         # Проверьте действительный адрес электронной почты
         form_data = {
+            'title': 'Статья 1',
             'first_name': 'John',
             'last_name': 'Doe',
             'email': 'john@example.com',
@@ -20,6 +21,7 @@ class ClientFormTest(TestCase):
     def test_clean_email_too_long(self):
         # Длина тестового электронного письма превышает установленный лимит
         form_data = {
+            'title': 'Статья 1',
             'first_name': 'John',
             'last_name': 'Doe',
             'email': 'a' * 31 + '@example.com',
@@ -34,6 +36,7 @@ class ClientFormTest(TestCase):
     def test_clean_email_no_at_symbol(self):
         # Тестовое электронное письмо без символа "@"
         form_data = {
+            'title': 'Статья 1',
             'first_name': 'John',
             'last_name': 'Doe',
             'email': 'johnexample.com',
@@ -48,6 +51,7 @@ class ClientFormTest(TestCase):
     def test_empty_email(self):
         # Проверьте пустое поле электронной почты
         form_data = {
+            'title': 'Статья 1',
             'first_name': 'John',
             'last_name': 'Doe',
             'content': 'Some content',
@@ -61,13 +65,14 @@ class ClientFormTest(TestCase):
     def test_content_length_exceeds_limit(self):
         # Длина тестового содержимого превышает допустимое значение
         form_data = {
+            'title': 'Статья 1',
             'first_name': 'John',
             'last_name': 'Doe',
             'email': 'john@example.com',
-            'content': 'a' * 1001,  # Assuming max length is 1000
+            'content': 'a' * 10001,  # Assuming max length is 10000
             'is_status': True,
         }
         form = ClientForm(data=form_data)
         self.assertFalse(form.is_valid())
         self.assertIn('content', form.errors)
-        self.assertEqual(form.errors['content'], ['Содержимое статьи не может превышать 1000 символов.'])
+        self.assertEqual(form.errors['content'], ['Содержимое статьи не может превышать 10000 символов.'])

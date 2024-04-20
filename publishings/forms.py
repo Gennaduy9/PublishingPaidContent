@@ -8,7 +8,7 @@ from publishings.models import Profile
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ('first_name', 'last_name', 'email', 'content', 'is_status')
+        fields = ('title', 'first_name', 'last_name', 'email', 'content', 'is_status')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,7 +20,9 @@ class ClientForm(forms.ModelForm):
         self.fields['email'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Электронная почта"})
         self.fields['content'].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Содержимое статьи"})
+            {"class": "form-control", "placeholder": "Содержимое статьи", 'id': 'default-editor'})
+        self.fields['title'].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Заголовок статьи"})
 
         # Удаление меток и подсказок для каждого поля
         for field_name in self.fields:
@@ -41,6 +43,13 @@ class ClientForm(forms.ModelForm):
     def clean_content(self):
         content = self.cleaned_data['content']
         # Проверка длины содержимого
-        if len(content) > 1000:  # Предполагается, что максимальная длина составляет 1000 символов
-            raise forms.ValidationError("Содержимое статьи не может превышать 1000 символов.")
+        if len(content) > 10000:  # Предполагается, что максимальная длина составляет 10000 символов
+            raise forms.ValidationError("Содержимое статьи не может превышать 10000 символов.")
         return content
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        # Проверка длины содержимого
+        if len(title) > 200:  # Предполагается, что максимальная длина составляет 1000 символов
+            raise forms.ValidationError("Заголовок статьи превышает 200 символов.")
+        return title

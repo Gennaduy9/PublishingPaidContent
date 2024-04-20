@@ -48,6 +48,16 @@ class Command(BaseCommand):
         user2.set_password('user2')
         user2.save()
 
+        user3 = User.objects.create(
+            email='gubingm@list.ru',
+            is_active=True,
+            is_staff=True,
+            is_superuser=True
+        )
+
+        user3.set_password('123qwe456rty')
+        user3.save()
+
         view_email = Permission.objects.get(codename='view_email')
         change_email = Permission.objects.get(codename='change_email')
         view_user = Permission.objects.get(codename='view_user')

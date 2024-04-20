@@ -8,14 +8,16 @@
         {% for object in object_list %}
             {% if user.is_authenticated %}
                 <div class="col-md-6">
-                    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm position-relative">
                         <div class="col p-4 d-flex flex-column position-static">
                             <strong class="d-inline-block mb-2 text-primary-emphasis">{{ title_blog }}</strong>
-                            {% if object.is_status %}
-                                <h3 class="mb-0">{{ object|title }}</h3>
-                            {% else %}
-                                <h3 class="text-muted">{{ object|title }}</h3>
-                            {% endif %}
+                                {% if object.is_paid %}
+                                    <h4>{{ object.first_name }} {{ object.last_name }}</h4>
+                                    <h3 class="mb-0"> {{ object.title }} </h3>
+                                {% else %}
+                                    <h4>{{ object.first_name }} {{ object.last_name }}</h4>
+                                    <h3 class="text-muted">{{ object.title }}</h3>
+                                {% endif %}
                             <div class="mb-1 text-body-secondary">Дата создание подписки: {{ object.created }}</div>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <p class="card-text">Статус:
@@ -38,14 +40,7 @@
                                     </div>
                                 {% endif %}
                             </div>
-
                             <p class="card-text mb-auto">{{ content }}</p>
-                            <!-- <a href="#" class="btn btn-sm btn-info text-white position-relative"
-                                style="z-index: 100">
-
-
-                             </a>-->
-
                             {% if request.path|slice:"1:" != 'categorys/' %}
                                 {% if object.pk in id_sub %}
                                     <p style="color: green">Подписан</p>
@@ -83,13 +78,15 @@
             {% else %}
                 {% if not object.is_status %}
                     <div class="col-md-6">
-                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm  position-relative">
                             <div class="col p-4 d-flex flex-column position-static">
                                 <strong class="d-inline-block mb-2 text-primary-emphasis">{{ title_blog }}</strong>
                                 {% if object.is_paid %}
-                                    <h3 class="mb-0">{{ object|title }}</h3>
+                                    <h4>{{ object.first_name }} {{ object.last_name }}</h4>
+                                    <h3 class="mb-0"> {{ object.title }} </h3>
                                 {% else %}
-                                    <h3 class="text-muted">{{ object|title }}</h3>
+                                    <h4>{{ object.first_name }} {{ object.last_name }}</h4>
+                                    <h3 class="text-muted">{{ object.title }}</h3>
                                 {% endif %}
                                 <div class="mb-1 text-body-secondary">Дата создание подписки: {{ object.created }}</div>
                                 <div class="d-flex justify-content-between align-items-center mt-3">
