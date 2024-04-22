@@ -8,7 +8,7 @@ class UserRegistrationForm(UserCreationForm):
     # Форма регистрации пользователя
     class Meta:
         model = User  # Указываем модель пользователя для формы
-        fields = ('phone', 'email')  # Указываем поля, которые будут отображаться в форме
+        fields = ('phone',)  # Указываем поля, которые будут отображаться в форме
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -16,8 +16,6 @@ class UserRegistrationForm(UserCreationForm):
         # Настройка атрибутов виджетов полей формы
         self.fields['phone'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Напишите ваш номер телефона"})
-        self.fields['email'].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Напишите вашу электронную почту"})
         self.fields['password1'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Новый пароль"})
         self.fields['password2'].widget.attrs.update(
@@ -50,7 +48,7 @@ class UserProfileForm(forms.ModelForm):
     # Форма профиля пользователя
     class Meta:
         model = User  # Указываем модель пользователя для формы
-        fields = ('first_name', 'last_name', 'phone', 'email')  # Указываем поля, которые будут отображаться в форме
+        fields = ('first_name', 'last_name', 'phone')  # Указываем поля, которые будут отображаться в форме
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

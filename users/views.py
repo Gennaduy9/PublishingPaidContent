@@ -127,12 +127,12 @@ class UserRegistrationCreateView(CreateView):
                 args=[new_user.pk, verification_token])
         )
 
-        send_mail(
+        '''send_mail(
             subject='Успешная регистрация на почтовом сервисе',
             message=f'Нажмите сюда, чтобы активировать свой профиль {verification_url}.',
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[new_user.email]
-        )
+        )'''
         return super().form_valid(form)
 
 
@@ -141,7 +141,7 @@ class UserProfileUpdateView(UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile_form.html'
-    success_url = reverse_lazy('users:profile')
+    success_url = reverse_lazy('publishings:clients_create')
 
     def get_object(self, queryset=None):
         return self.request.user
