@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.mail import send_mail
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View
@@ -77,7 +77,7 @@ class ConnectionView(TemplateView):
             subject='Обратная связь',
             message=f'Имя {name} Email {email} Сообщение {message}',
             from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=['myparents2@yandex.ru']
+            recipient_list=settings.ADMIN_EMAIL
         )
         return redirect('/')
 
@@ -179,9 +179,7 @@ class StripeWebhookView(View):
 
         return JsonResponse({'status': 'success'})
 
-# def page_not_found(request, exception):
-#     return HttpResponseNotFound("<h1>Страница не найдена</h1>")
 
-# class PageNotFoundView(View):
-#     def get(self, request, *args, **kwargs):
-#         return HttpResponseNotFound("<h1>Страница не найдена</h1>")
+class PageNotFoundView(View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotFound("<h1>Страница не найдена</h1>")

@@ -9,7 +9,7 @@ NULLABLE = {'blank': True, 'null': True}
 class User(AbstractUser):
     username = None
 
-    email = models.EmailField(**NULLABLE, verbose_name='Почта')
+    email = models.EmailField(**NULLABLE, unique=False, verbose_name='Почта')
     is_active = models.BooleanField(default=False, verbose_name='Активен')
 
     verification_token = models.CharField(max_length=20, **NULLABLE, verbose_name='Токен')

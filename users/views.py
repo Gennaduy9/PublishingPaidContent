@@ -1,7 +1,9 @@
+import secrets
+import string
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.views import LoginView as BaseLoginView
-from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views import View
@@ -12,7 +14,6 @@ from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, Ph
 from users.models import User
 from users.services import generate_verification_token
 from twilio.rest import Client
-import random
 from django.contrib.auth import login, logout
 
 
@@ -24,13 +25,19 @@ class VerificationCodeSender:
         self.client = Client(self.account_sid, self.auth_token)
 
     def send_verification_code(self, phone_number):
-        # Метод для отправки кода верификации на указанный номер телефона
-        verification_code = ''.join([str(random.randint(0, 9)) for _ in range(4)])
-        message = self.client.messages.create(
-            body=f"Ваш код подтверждения: {verification_code}",
-            from_='+12513206600',
-            to=phone_number
-        )
+        """
+        Метод для отправки кода верификации на указанный номер телефона.
+        """
+        alphabet = string.digits
+        verification_code = ''.join(secrets.choice(alphabet) for _ in range(4))
+        if settings.DEBUG:
+            print(verification_code)
+        else:
+            self.client.messages.create(
+                body=f"Ваш код подтверждения: {verification_code}",
+                from_='+12513206600',
+                to=phone_number
+            )
         return verification_code
 
 
@@ -53,7 +60,7 @@ class AuthenticatePhoneView(View):
 
 
 class VerifyPhoneView(View):
-    # Представление для верификации телефона через ввод кода из SMS
+
     def get(self, request):
         return render(request, 'users/verify_phone.html')
 
@@ -62,12 +69,24 @@ class VerifyPhoneView(View):
         stored_code = request.session.get('verification_code')
         phone_number = request.session.get('phone_number')
         if verification_code == stored_code:
-            if User.objects.filter(phone=phone_number).exists():
-                user = User.objects.get(phone=phone_number)
-                login(request, user)
-            return redirect('/users/profile/')  # Redirect to success page
+            user = self._get_or_create_user_by_phone(phone_number)
+            login(request, user)
+            return redirect('/users/profile/')
+
+        return redirect('/users/loginphone/')
+
+    def _get_or_create_user_by_phone(self, phone_number) -> User:
+        user = User.objects.filter(phone__exact=phone_number)
+        if user.exists():
+            user = User.objects.get(phone=phone_number)
         else:
-            return redirect('/users/loginphone/')
+            user = User(phone=phone_number, is_active=True)
+            user.set_unusable_password()
+            verification_token = generate_verification_token()
+            user.verification_token = verification_token
+            user.save()
+
+        return user
 
 
 class UserLoginView(BaseLoginView):

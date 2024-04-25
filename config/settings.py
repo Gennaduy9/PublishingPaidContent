@@ -26,11 +26,12 @@ load_dotenv(BASE_DIR / '.env')
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-ew&aoj*d*#+b)2c3ueo3#wjf3s2$$!f3qt33tsnrvziwao(k^b"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG") == "True"
 
+ADMIN_EMAIL = ['myparents2@yandex.ru']
 ALLOWED_HOSTS = ["localhost", "0.0.0.0", "127.0.0.1", "web"]
 WEB = "http://127.0.0.1:8000"
 
@@ -82,6 +83,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 REUSE_DB = 1
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": "postgres_paid_content",  # Название БД
+#         "USER": "postgres",  # Пользователь для подключения
+#         "PASSWORD": 12345,  # Пароль для этого пользователя
+#         "HOST": "localhost",  # Адрес, на котором развернут сервер БД
+#         "PORT": 5432,  # Порт, на котором работает сервер БД
+#     }
+# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -90,19 +102,8 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),  # Пароль для этого пользователя
         "HOST": os.getenv("POSTGRES_HOST"),  # Адрес, на котором развернут сервер БД
         "PORT": os.getenv("POSTGRES_PORT"),  # Порт, на котором работает сервер БД
-        'TEST': {
-            'NAME': os.getenv("POSTGRES_DB")
-        },
     }
-
 }
-
-if 'test' in sys.argv:
-    # Переопределение настроек базы данных по умолчанию для тестирования
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db_test.sqlite3',
-    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

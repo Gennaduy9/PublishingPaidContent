@@ -48,7 +48,7 @@ class UserProfileForm(forms.ModelForm):
     # Форма профиля пользователя
     class Meta:
         model = User  # Указываем модель пользователя для формы
-        fields = ('first_name', 'last_name', 'phone')  # Указываем поля, которые будут отображаться в форме
+        fields = ('first_name', 'last_name', 'email', 'phone')  # Указываем поля, которые будут отображаться в форме
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -58,6 +58,8 @@ class UserProfileForm(forms.ModelForm):
             {"class": "form-control", "placeholder": "Напишите ваше имя"})
         self.fields['last_name'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Напишите вашу фамилию"})
+        self.fields['email'].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Напишите свою почту"})
         self.fields['phone'].widget.attrs.update(
             {"class": "form-control", "placeholder": "Напишите свой телефон"})
 

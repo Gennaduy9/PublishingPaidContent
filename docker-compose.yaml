@@ -55,7 +55,10 @@ services:
     container_name: django_test
     build: .
     command: bash -c "coverage run --source=publishings manage.py test && coverage report"
+    env_file:
+      - .env
     depends_on:
+      - db
       - web
     restart: on-failure
 
